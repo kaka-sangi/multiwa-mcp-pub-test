@@ -5,11 +5,13 @@ services:
       dockerfile: Dockerfile
       args:
         MULTIWA_SPEC_URL: "https://multiwa-api.v244.net/api/docs-json"
+        MULTIWA_API_URL: "https://multiwa-api.v244.net"
     image: multiwa-mcp:latest
     restart: unless-stopped
     environment:
       MULTIWA_API_KEY: "${MULTIWA_API_KEY}"
       MULTIWA_SPEC_URL: "https://multiwa-api.v244.net/api/docs-json"
+      MULTIWA_API_URL: "https://multiwa-api.v244.net"
       INCLUDE_TAGS: "Profiles,Messages,Contacts,Conversations,Groups,Webhooks,Health"
       EXCLUDE_TAGS: ""
       VALIDATE_OUTPUT: "false"

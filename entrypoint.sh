@@ -5,6 +5,7 @@ set -euo pipefail
 
 SPEC="${SPEC_CACHE_PATH:-/app/openapi.json}"
 SPEC_URL="${MULTIWA_SPEC_URL:-https://multiwa-api.v244.net/api/docs-json}"
+API_BASE="${MULTIWA_API_URL:-https://multiwa-api.v244.net}"
 
 if [[ ! -f "${SPEC}" || ! -s "${SPEC}" ]]; then
     echo "[entrypoint] Spec not baked in; fetching from ${SPEC_URL}"
@@ -20,6 +21,20 @@ if [[ ! -f "${SPEC}" || ! -s "${SPEC}" ]]; then
         }
     fi
 fi
+
+API_BASE="${API_BASE%/}"
+python -c "
+import json, os
+path = os.environ['SPEC']
+api_base = os.environ['API_BASE']
+with open(path) as f:
+    spec = json.load(f)
+spec['servers'] = [{'url': api_base, 'description': 'MultiWA API'}]
+with open(path, 'w') as f:
+    json.dump(spec, f, indent=2)
+    f.write('\n')
+print(f'[entrypoint] Set servers[0].url to {api_base}')
+" SPEC="${SPEC}" API_BASE="${API_BASE}"
 
 export API_SPEC_PATH="${SPEC}"
 unset API_SPEC_URL

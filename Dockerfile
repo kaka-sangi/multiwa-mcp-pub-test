@@ -23,8 +23,10 @@ COPY fetch-spec.sh /app/fetch-spec.sh
 RUN chmod +x /app/entrypoint.sh /app/fetch-spec.sh
 
 ARG MULTIWA_SPEC_URL=https://multiwa-api.v244.net/api/docs-json
+ARG MULTIWA_API_URL=https://multiwa-api.v244.net
 ARG MULTIWA_API_KEY=
 ENV MULTIWA_SPEC_URL=${MULTIWA_SPEC_URL} \
+    MULTIWA_API_URL=${MULTIWA_API_URL} \
     MULTIWA_API_KEY=${MULTIWA_API_KEY}
 RUN /app/fetch-spec.sh
 
@@ -39,11 +41,12 @@ ENV API_NAME="multiwa" \
     ENABLE_OPERATION_PROMPTS="true" \
     MCP_PROXY_HOST="0.0.0.0" \
     MCP_PROXY_PORT="8050" \
+    MULTIWA_API_URL="https://multiwa-api.v244.net" \
     SPEC_CACHE_PATH="/app/openapi.json"
 
 EXPOSE 8050
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-    CMD curl -fsS http://localhost:8050/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD curl -fsS http://localhost:8050/sse >/dev/null || exit 1
 
 ENTRYPOINT ["/app/entrypoint.sh"]
