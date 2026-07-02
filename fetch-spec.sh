@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
+# Fetch the MultiWA OpenAPI spec at build time so the image is self-contained.
 set -euo pipefail
 
 SPEC_URL="${MULTIWA_SPEC_URL:-https://multiwa-api.v244.net/api/docs-json}"
 OUT="${SPEC_CACHE_PATH:-/app/openapi.json}"
 
-AUTH_HDR=""
-if [[ -n "${MULTIWA_API_KEY:-}" ]]; then
-    AUTH_HDR="-H x-api-key: ${MULTIWA_API_KEY}"
-fi
-
 echo "[fetch-spec] Fetching OpenAPI spec from ${SPEC_URL}"
-curl -fsS ${AUTH_HDR} -o "${OUT}" "${SPEC_URL}"
+if [[ -n "${MULTIWA_API_KEY:-}" ]]; then
+    curl -fsS -H "x-api-key: ${MULTIWA_API_KEY}" -o "${OUT}" "${SPEC_URL}"
+else
+    curl -fsS -o "${OUT}" "${SPEC_URL}"
+fi
 
 if [[ ! -s "${OUT}" ]]; then
     echo "[fetch-spec] ERROR: spec is empty" >&2

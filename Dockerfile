@@ -22,6 +22,12 @@ COPY entrypoint.sh /app/entrypoint.sh
 COPY fetch-spec.sh /app/fetch-spec.sh
 RUN chmod +x /app/entrypoint.sh /app/fetch-spec.sh
 
+ARG MULTIWA_SPEC_URL=https://multiwa-api.v244.net/api/docs-json
+ARG MULTIWA_API_KEY=
+ENV MULTIWA_SPEC_URL=${MULTIWA_SPEC_URL} \
+    MULTIWA_API_KEY=${MULTIWA_API_KEY}
+RUN /app/fetch-spec.sh
+
 ENV API_NAME="multiwa" \
     AUTH_TYPE="api_key" \
     AUTH_API_KEY_NAME="x-api-key" \
