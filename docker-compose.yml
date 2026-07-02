@@ -1,0 +1,21 @@
+services:
+  multiwa-mcp:
+    build:
+      context: https://github.com/kaka-sangi/multiwa-mcp-pub-test.git#main
+      dockerfile: Dockerfile
+      args:
+        MULTIWA_SPEC_URL: "https://multiwa-api.v244.net/api/docs-json"
+    image: multiwa-mcp:latest
+    restart: unless-stopped
+    environment:
+      MULTIWA_API_KEY: "${MULTIWA_API_KEY}"
+      MULTIWA_SPEC_URL: "https://multiwa-api.v244.net/api/docs-json"
+      INCLUDE_TAGS: "Profiles,Messages,Contacts,Conversations,Groups,Webhooks,Health"
+      EXCLUDE_TAGS: ""
+      VALIDATE_OUTPUT: "false"
+      LOG_LEVEL: "INFO"
+      ENABLE_OPERATION_PROMPTS: "true"
+      MCP_PROXY_HOST: "0.0.0.0"
+      MCP_PROXY_PORT: "8050"
+    expose:
+      - "8050"
