@@ -26,7 +26,7 @@ python -c "import json,sys; json.load(open('${OUT}'))" || {
 }
 
 API_BASE="${API_BASE%/}"
-python -c "
+OUT="${OUT}" API_BASE="${API_BASE}" python -c "
 import json, os
 path = os.environ['OUT']
 api_base = os.environ['API_BASE']
@@ -37,7 +37,7 @@ with open(path, 'w') as f:
     json.dump(spec, f, indent=2)
     f.write('\n')
 print(f'[fetch-spec] Set servers[0].url to {api_base}')
-" OUT="${OUT}" API_BASE="${API_BASE}"
+"
 
 OPS=$(python -c "import json; d=json.load(open('${OUT}')); print(sum(1 for p in d.get('paths',{}).values() for m in p if m in ('get','post','put','delete','patch')))")
 echo "[fetch-spec] Cached spec with ${OPS} operations at ${OUT}"
